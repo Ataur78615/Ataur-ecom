@@ -1,0 +1,87 @@
+/* ===================================
+   Professional Ecommerce Register/Login Page
+=================================== */
+.form-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  flex-direction: column;
+  background: linear-gradient(120deg, #f8fafc 0%, #e0e7ef 100%);
+  padding: 40px 0;
+}
+
+.form-container form {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+  padding: 40px 32px 32px 32px;
+  min-width: 340px;
+  max-width: 400px;
+  width: 100%;
+  transition: box-shadow 0.2s;
+}
+
+.form-container form .title {
+  text-align: center;
+  margin-bottom: 28px;
+  font-weight: 700;
+  font-size: 2rem;
+  color: #22223b;
+  font-family: "Playfair Display", serif;
+  letter-spacing: 1px;
+}
+
+.form-container form input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 22px;
+  border: 1px solid #e0e7ef;
+  border-radius: 8px;
+  background: #f7fafc;
+  font-size: 1rem;
+  transition: border 0.2s;
+  outline: none;
+}
+
+.form-container form input:focus {
+  border: 1.5px solid #3a86ff;
+  background: #fff;
+}
+
+.form-container form button {
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #3a86ff 0%, #4361ee 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.1rem;
+  width: 100%;
+  padding: 12px 0;
+  margin-top: 10px;
+  box-shadow: 0 2px 8px rgba(58, 134, 255, 0.08);
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.form-container form button:hover {
+  background: linear-gradient(90deg, #4361ee 0%, #3a86ff 100%);
+  box-shadow: 0 4px 16px rgba(58, 134, 255, 0.15);
+}
+
+.form-container .form-footer {
+  margin-top: 18px;
+  text-align: center;
+  color: #6c757d;
+  font-size: 0.97rem;
+}
+
+@media (max-width: 500px) {
+  .form-container form {
+    min-width: 90vw;
+    padding: 24px 8px 18px 8px;
+  }
+  .form-container {
+    padding: 10px 0;
+  }
+}
