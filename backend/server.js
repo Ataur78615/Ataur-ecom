@@ -1,47 +1,53 @@
 import express from "express";
 import cors from "cors";
-import morgan from "morgan";
 import dotenv from "dotenv";
-import connectDB from "./config/db.js";
-import authRoutes from "./routes/authRoutes.js";
-import categoryRoutes from "./routes/categoryRoutes.js";
-import productRoutes from "./routes/productRoutes.js";
+import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
+import connectDB from "./config/db.js";
 
-// Configure environment
+// Routes
+import authRoutes from "./routes/authRoute.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
+
+// Config
 dotenv.config();
 
-// App
+// Express App
 const app = express();
 
-// __dirname setup for ES module
+// __dirname workaround (ES Modules)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Connect MongoDB
+// MongoDB Connection
 connectDB();
 
-// Middlewares
+// Middleware
 app.use(cors({
-  origin: "https://ataur-ecom-1.onrender.com", // ✅ Your frontend domain
-  credentials: true
+  origin: "https://ataur-ecom-1.onrender.com", // ✅ your frontend domain
+  credentials: true,
 }));
 app.use(express.json());
 app.use(morgan("dev"));
 
-// Routes
+// API Routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/product", productRoutes);
 
-// Static files (for deployment)
-app.use(express.static(path.join(__dirname, "./client/build")));
-app.get("*", function (req, res) {
-  res.sendFile(path.join(__dirname, "./client/build/index.html"));
-});
+// ----------------- Deployment Setup -------------------
+// Static file serve (for frontend)
+// For CRA: client/build
+app.use(express.static(path.join(__dirname, "../client/build")));
 
-// Server listen
+app.get("*", function (req, res) {
+  res.sendFile(path.join(__dirname, "../client/build/index.html"));
+});
+// ------------------------------------------------------
+
+// Port Setup
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
