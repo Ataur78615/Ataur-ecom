@@ -3,7 +3,7 @@ import cors from "cors";
 import morgan from "morgan";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
-import authRoutes from "./routes/authRoute.js";
+import authRoutes from "./routes/authRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import path from "path";
