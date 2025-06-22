@@ -9,9 +9,11 @@ const AuthProvider = ({ children }) => {
     token: "",
   });
 
-  // ✅ Set baseURL for backend API
+  // ✅ Set backend base URL
   axios.defaults.baseURL = "https://ataur-ecom.onrender.com/api/v1";
-  axios.defaults.withCredentials = true; // (optional for login cookies/tokens)
+
+  // ✅ VERY IMPORTANT → Fixes CORS issue when using credentials
+  axios.defaults.withCredentials = true;
 
   // ✅ Set token in header
   axios.defaults.headers.common["Authorization"] = auth?.token;
@@ -26,7 +28,7 @@ const AuthProvider = ({ children }) => {
         token: parseData.token,
       });
 
-      // ✅ Token also set again after reload
+      // ✅ Set token again after refresh
       axios.defaults.headers.common["Authorization"] = parseData.token;
     }
     //eslint-disable-next-line
