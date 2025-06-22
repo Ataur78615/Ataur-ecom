@@ -6,28 +6,28 @@ import path from "path";
 import { fileURLToPath } from "url";
 import connectDB from "./config/db.js";
 
-// Routes
+// Import Routes
 import authRoutes from "./routes/authRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 
-// Config
+// Config env
 dotenv.config();
 
-// Express App
+// Express app
 const app = express();
 
-// __dirname workaround (ES Modules)
+// Resolve __dirname in ES Module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// MongoDB Connection
+// Connect to DB
 connectDB();
 
-// Middleware
+// Middlewares
 app.use(cors({
-  origin: "https://ataur-ecom-1.onrender.com", // ✅ your frontend domain
-  credentials: true,
+  origin: "https://ataur-ecom-1.onrender.com", // ✅ Replace with your frontend render link
+  credentials: true
 }));
 app.use(express.json());
 app.use(morgan("dev"));
@@ -37,17 +37,13 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/product", productRoutes);
 
-// ----------------- Deployment Setup -------------------
-// Static file serve (for frontend)
-// For CRA: client/build
+// Serve static files from React
 app.use(express.static(path.join(__dirname, "../client/build")));
-
-app.get("*", function (req, res) {
+app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));
 });
-// ------------------------------------------------------
 
-// Port Setup
+// Run server
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
