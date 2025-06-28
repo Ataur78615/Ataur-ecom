@@ -7,7 +7,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import Layout from "./../components/Layout/Layout";
 import { AiOutlineReload } from "react-icons/ai";
-import '../styles/HomePage.css';
+import "../styles/HomePage.css";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -20,10 +20,13 @@ const HomePage = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  // get all categories
+  // DEBUG: Print base API
+  console.log("BASE API:", process.env.REACT_APP_API);
+
+  // Get all categories
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/category/get-category`);
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/category/get-category`);
       if (data?.success) {
         setCategories(data?.category);
       }
@@ -32,16 +35,21 @@ const HomePage = () => {
     }
   };
 
-  useEffect(() => {
-    getAllCategory();
-    getTotal();
-  }, []);
+  // Get total product count
+  const getTotal = async () => {
+    try {
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/product/product-count`);
+      setTotal(data?.total);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  // get products
+  // Get all products
   const getAllProducts = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/product-list/${page}`);
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/product/product-list/${page}`);
       setLoading(false);
       setProducts(data.products);
     } catch (error) {
@@ -50,35 +58,20 @@ const HomePage = () => {
     }
   };
 
-  // get total count
-  const getTotal = async () => {
-    try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/product-count`);
-      setTotal(data?.total);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    if (page === 1) return;
-    loadMore();
-  }, [page]);
-
-  // load more
+  // Load more products
   const loadMore = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/product-list/${page}`);
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/product/product-list/${page}`);
       setLoading(false);
       setProducts([...products, ...data?.products]);
     } catch (error) {
-      console.log(error);
       setLoading(false);
+      console.log(error);
     }
   };
 
-  // filter by category
+  // Filter by category
   const handleFilter = (value, id) => {
     let all = [...checked];
     if (value) {
@@ -89,18 +82,10 @@ const HomePage = () => {
     setChecked(all);
   };
 
-  useEffect(() => {
-    if (!checked.length || !radio.length) getAllProducts();
-  }, [checked.length, radio.length]);
-
-  useEffect(() => {
-    if (checked.length || radio.length) filterProduct();
-  }, [checked, radio]);
-
-  // get filtered products
+  // Filtered product call
   const filterProduct = async () => {
     try {
-      const { data } = await axios.post(`${process.env.REACT_APP_API}/api/v1/product/product-filters`, {
+      const { data } = await axios.post(`${process.env.REACT_APP_API}/product/product-filters`, {
         checked,
         radio,
       });
@@ -110,14 +95,36 @@ const HomePage = () => {
     }
   };
 
+  // Load categories and total once
+  useEffect(() => {
+    getAllCategory();
+    getTotal();
+  }, []);
+
+  // Load all products on first render or when filters are empty
+  useEffect(() => {
+    if (!checked.length || !radio.length) getAllProducts();
+  }, [checked.length, radio.length]);
+
+  // Apply filters
+  useEffect(() => {
+    if (checked.length || radio.length) filterProduct();
+  }, [checked, radio]);
+
+  // Load more when page changes
+  useEffect(() => {
+    if (page === 1) return;
+    loadMore();
+  }, [page]);
+
   return (
-    <Layout title={"All Products - Best offers"}>
-      {/* banner image */}
+    <Layout title="All Products - Best Offers">
+      {/* Banner image */}
       <img
         src="/images/banner.png"
         className="banner-img"
         alt="bannerimage"
-        width={"100%"}
+        width="100%"
       />
       <div className="container-fluid row mt-3 home-page">
         <div className="col-md-3 filters">
@@ -160,7 +167,7 @@ const HomePage = () => {
             {products?.map((p) => (
               <div className="card m-2" key={p._id}>
                 <img
-                  src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${p._id}`}
+                  src={`${process.env.REACT_APP_API}/product/product-photo/${p._id}`}
                   className="card-img-top"
                   alt={p.name}
                 />
@@ -188,10 +195,7 @@ const HomePage = () => {
                       className="btn btn-dark ms-1"
                       onClick={() => {
                         setCart([...cart, p]);
-                        localStorage.setItem(
-                          "cart",
-                          JSON.stringify([...cart, p])
-                        );
+                        localStorage.setItem("cart", JSON.stringify([...cart, p]));
                         toast.success("Item Added to cart");
                       }}
                     >
@@ -216,7 +220,7 @@ const HomePage = () => {
                   "Loading ..."
                 ) : (
                   <>
-                    Loadmore <AiOutlineReload />
+                    Load More <AiOutlineReload />
                   </>
                 )}
               </button>
