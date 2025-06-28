@@ -25,10 +25,12 @@ const __dirname = path.dirname(__filename);
 connectDB();
 
 // Middlewares
-app.use(cors({
-  origin: "https://ataur-ecom-1.onrender.com", // ✅ Replace with your frontend render link
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: "https://ataur-ecom.vercel.app", // ✅ Replace with your frontend domain
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(morgan("dev"));
 
@@ -37,11 +39,11 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/product", productRoutes);
 
-// Serve static files from React
-app.use(express.static(path.join(__dirname, "../client/build")));
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/build/index.html"));
-});
+// ❌ Remove or comment this part if frontend is deployed separately
+// app.use(express.static(path.join(__dirname, "../client/build")));
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "../client/build/index.html"));
+// });
 
 // Run server
 const PORT = process.env.PORT || 8080;
