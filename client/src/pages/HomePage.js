@@ -20,10 +20,10 @@ const HomePage = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  //get all cat
+  // get all categories
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get("/api/v1/category/get-category");
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/category/get-category`);
       if (data?.success) {
         setCategories(data?.category);
       }
@@ -36,11 +36,12 @@ const HomePage = () => {
     getAllCategory();
     getTotal();
   }, []);
-  //get products
+
+  // get products
   const getAllProducts = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(`/api/v1/product/product-list/${page}`);
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/product-list/${page}`);
       setLoading(false);
       setProducts(data.products);
     } catch (error) {
@@ -49,10 +50,10 @@ const HomePage = () => {
     }
   };
 
-  //getTotal Count
+  // get total count
   const getTotal = async () => {
     try {
-      const { data } = await axios.get("/api/v1/product/product-count");
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/product-count`);
       setTotal(data?.total);
     } catch (error) {
       console.log(error);
@@ -63,11 +64,12 @@ const HomePage = () => {
     if (page === 1) return;
     loadMore();
   }, [page]);
-  //load more
+
+  // load more
   const loadMore = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(`/api/v1/product/product-list/${page}`);
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/product-list/${page}`);
       setLoading(false);
       setProducts([...products, ...data?.products]);
     } catch (error) {
@@ -76,7 +78,7 @@ const HomePage = () => {
     }
   };
 
-  // filter by cat
+  // filter by category
   const handleFilter = (value, id) => {
     let all = [...checked];
     if (value) {
@@ -86,6 +88,7 @@ const HomePage = () => {
     }
     setChecked(all);
   };
+
   useEffect(() => {
     if (!checked.length || !radio.length) getAllProducts();
   }, [checked.length, radio.length]);
@@ -94,10 +97,10 @@ const HomePage = () => {
     if (checked.length || radio.length) filterProduct();
   }, [checked, radio]);
 
-  //get filterd product
+  // get filtered products
   const filterProduct = async () => {
     try {
-      const { data } = await axios.post("/api/v1/product/product-filters", {
+      const { data } = await axios.post(`${process.env.REACT_APP_API}/api/v1/product/product-filters`, {
         checked,
         radio,
       });
@@ -106,8 +109,9 @@ const HomePage = () => {
       console.log(error);
     }
   };
+
   return (
-    <Layout title={"ALl Products - Best offers "}>
+    <Layout title={"All Products - Best offers"}>
       {/* banner image */}
       <img
         src="/images/banner.png"
@@ -115,7 +119,6 @@ const HomePage = () => {
         alt="bannerimage"
         width={"100%"}
       />
-      {/* banner image */}
       <div className="container-fluid row mt-3 home-page">
         <div className="col-md-3 filters">
           <h4 className="text-center">Filter By Category</h4>
@@ -129,7 +132,7 @@ const HomePage = () => {
               </Checkbox>
             ))}
           </div>
-          {/* price filter */}
+
           <h4 className="text-center mt-4">Filter By Price</h4>
           <div className="d-flex flex-column">
             <Radio.Group onChange={(e) => setRadio(e.target.value)}>
@@ -140,6 +143,7 @@ const HomePage = () => {
               ))}
             </Radio.Group>
           </div>
+
           <div className="d-flex flex-column">
             <button
               className="btn btn-danger"
@@ -149,13 +153,14 @@ const HomePage = () => {
             </button>
           </div>
         </div>
-        <div className="col-md-9 ">
+
+        <div className="col-md-9">
           <h1 className="text-center">All Products</h1>
           <div className="d-flex flex-wrap">
             {products?.map((p) => (
               <div className="card m-2" key={p._id}>
                 <img
-                  src={`/api/v1/product/product-photo/${p._id}`}
+                  src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${p._id}`}
                   className="card-img-top"
                   alt={p.name}
                 />
@@ -169,7 +174,7 @@ const HomePage = () => {
                       })}
                     </h5>
                   </div>
-                  <p className="card-text ">
+                  <p className="card-text">
                     {p.description.substring(0, 60)}...
                   </p>
                   <div className="card-name-price">
@@ -197,6 +202,7 @@ const HomePage = () => {
               </div>
             ))}
           </div>
+
           <div className="m-2 p-3">
             {products && products.length < total && (
               <button
@@ -210,7 +216,6 @@ const HomePage = () => {
                   "Loading ..."
                 ) : (
                   <>
-                    {" "}
                     Loadmore <AiOutlineReload />
                   </>
                 )}
